@@ -1,0 +1,56 @@
+('IT'),
+('HR'),
+('Finance'),
+('Marketing');
+
+
+
+INSERT INTO Employees (FirstName, LastName, Email, HireDate, Department, Salary) VALUES
+('Jacek', 'Łoś', 'JacekŁoś@interia.pl', '2023-01-15', 'IT', 60000),
+('Anna', 'Kowalczyk', 'AnnaKowalczyk@onet.pl', '2023-02-20', 'HR', 55000),
+('Tomasz', 'Johnson', 'Tomasz.Johnson@interia.pl', '2023-03-05', 'Finance', 40000),
+('Zuzanna', 'Nowak', 'ZuzannaNowak@example.com', '2023-06-01', 'Marketing', 28000),
+('Alex', 'Nowak', 'ZuzannaNowak@example.com', '2022-06-01', 'IT-SUPPORT', 55000),
+('Rafał', 'Pawlak', 'ZuzannaNowak@example.com', '2022-06-01', 'IT-SUPPORT-JUNIOR', 35000);
+
+--pracownicy z działu "IT"
+
+SELECT FirstName, LastName, Email
+FROM Employees
+JOIN Departments ON Employees.DepartmentID = Departments.DepartmentID
+WHERE DepartmentName = 'IT';
+
+--średnia pensja w każdym dziale
+
+SELECT DepartmentName, AVG(Salary) AS AverageSalary
+FROM Employees
+JOIN Departments ON Employees.DepartmentID = Departments.DepartmentID
+GROUP BY DepartmentName;
+
+--pracownicy którzy zarabiają więcej niż średnia pensja w
+SELECT e.FirstName, e.LastName, e.Salary, d.DepartmentName
+FROM Employees e
+JOIN Departments d ON e.DepartmentID = d.DepartmentID
+WHERE e.Salary > (
+    SELECT AVG(Salary)
+    FROM Employees
+    WHERE DepartmentID = e.DepartmentID
+);
+
+--liczba pracowników w każym dziale
+SELECT d.DepartmentName, COUNT(e.EmployeeID) AS NumberOfEmployees
+FROM Departments d
+LEFT JOIN Employees e ON d.DepartmentID = e.DepartmentID
+GROUP BY d.DepartmentName;
+
+--Podwyżka pensja dla pracowników z IT(każdy)
+
+UPDATE Employees
+SET Salary = Salary * 1.15
+WHERE DepartmentID = (SELECT DepartmentID FROM Departments WHERE DepartmentName LIKE '%IT%')
+
+--pracownicy zatrudnieni po 01.03.2022
+
+SELECT FirstName, LastName, HireDate
+FROM Employees
+WHERE HireDate > '2022-03-01';
