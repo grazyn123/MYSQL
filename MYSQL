@@ -1,0 +1,55 @@
+CREATE TABLE Employees (
+    EmployeeID INT AUTO_INCREMENT PRIMARY KEY,
+    FirstName VARCHAR(50),
+    LastName VARCHAR(50),
+    Email VARCHAR(100),
+    HireDate DATE,
+    Department VARCHAR(50),
+    Salary DECIMAL(10, 2)
+);
+
+INSERT INTO Employees (FirstName, LastName, Email, HireDate, Department, Salary) VALUES
+('Jacek', 'Łoś', 'JacekŁoś@interia.pl', '2023-01-15', 'IT', 60000),
+('Anna', 'Kowalczyk', 'AnnaKowalczyk@onet.pl', '2023-02-20', 'HR', 55000),
+('Tomasz', 'Johnson', 'Tomasz.Johnson@interia.pl', '2023-03-05', 'Finance', 40000),
+('Zuzanna', 'Nowak', 'ZuzannaNowak@example.com', '2023-06-01', 'Marketing', 28000);
+
+
+-- srednia pensja
+SELECT Department, AVG(Salary) AS AverageSalary
+FROM Employees
+GROUP BY Department;
+
+--Aktualizcja pensji pracowników o 10% dla tych zatrudnionych po miesiącu Lutym 
+
+UPDATE Employees
+SET Salary = Salary * 1.05
+WHERE Department = 'Marketing'
+AND HireDate > '2023-02';
+
+--pracownik który najwięcej zarabia 
+
+SELECT MAX(Salary) AS HighestSalary
+FROM Employees;
+
+--pracownicy, którzy zarabiają więcej niż średnia pensja w firmie
+
+SELECT FirstName, LastName, Salary
+FROM Employees
+WHERE Salary > (SELECT AVG(Salary) FROM Employees);
+
+--pracownicy, którzy mają nazwisko dłuższe niż 5 wyrazów
+SELECT FirstName, LastName
+FROM Employees
+WHERE CHAR_LENGTH(LastName) > 5;
+
+--pracownicy ktorzy nie maja maila z domeną interia.pl
+SELECT FirstName, LastName, Email
+FROM Employees
+WHERE Email NOT LIKE '%@interia.com';
+
+--wybór trzech najwikszych pensji
+SELECT DISTINCT Salary
+FROM Employees
+ORDER BY Salary DESC
+LIMIT 3;
